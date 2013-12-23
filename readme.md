@@ -49,7 +49,7 @@ Call `vspte` or `vspte --help` to see this help screen:
 
     -s, --sln        Required. Path to .sln file containing the project you wish to export a template from
     
-    -p, --project    Required. The name of a project for template export
+    -p, --project    The name of a project for template export. If omitted all projects in the solution will be exported.
     
     --vsix           Create VSIX package with project template
     

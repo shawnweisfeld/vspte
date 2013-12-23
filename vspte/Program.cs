@@ -19,7 +19,15 @@ namespace vspte
             using (var vs = VisualStudio.Create(logTo: Console.Out))
             {
                 vs.OpenSolution(options.SlnPath);
-                vs.ExportTemplate(options.ProjectName, options.IncludeNuGetPackages);
+
+                if (string.IsNullOrEmpty(options.ProjectName))
+                {
+                    vs.ExportTemplate(options.IncludeNuGetPackages);
+                }
+                else
+                {
+                    vs.ExportTemplate(options.ProjectName, options.IncludeNuGetPackages);
+                }
 
                 if (!string.IsNullOrEmpty(options.VsixProjectName))
                 {
@@ -36,7 +44,7 @@ namespace vspte
         [Option('s', "sln", Required = true, HelpText = "Path to .sln file containing the project you wish to export a template from")]
         public string SlnPath { get; set; }
 
-        [Option('p', "project", Required = true, HelpText = "The name of a project for template export")]
+        [Option('p', "project", Required = false, HelpText = "The name of a project for template export")]
         public string ProjectName { get; set; }
 
         [Option("vsix", HelpText = "Create VSIX package with project template")]

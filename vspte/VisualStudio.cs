@@ -49,6 +49,15 @@ namespace vspte
             Log.WriteLine(" OK");
         }
 
+
+        public virtual void ExportTemplate(bool includeNuGetPackages)
+        {
+            foreach (var project in _dte.Solution.AllProjects())
+            {
+                ExportTemplate(project.Name, includeNuGetPackages);
+            }
+        }
+
         public virtual void ExportTemplate(string projectName, bool includeNuGetPackages)
         {
             Log.Write("Exporting project template...");
@@ -59,7 +68,7 @@ namespace vspte
                 .GetField("staticPackage", BindingFlags.Static | BindingFlags.NonPublic)
                 .SetValue(null, template);
 
-            var project = _dte.Solution.Projects.Cast<Project>().First(p => p.Name == projectName);
+            var project = _dte.Solution.Projects.Cast<Project>().FindByName(projectName);
             var wizard = new StandaloneTemplateWizardForm();
             wizard.SetUserData("DTE", _dte);
             wizard.SetUserData("IsProjectExport", true);

@@ -10,6 +10,7 @@ using Microsoft.VisualStudio.ExportTemplate;
 using vspte.Com;
 using vspte.Export;
 using vspte.Vsix;
+using System.IO.Compression;
 
 namespace vspte
 {
@@ -50,17 +51,17 @@ namespace vspte
         }
 
 
-        public virtual void ExportTemplate(bool includeNuGetPackages)
+        public virtual IEnumerable<string> ExportTemplate(bool includeNuGetPackages)
         {
             foreach (var project in _dte.Solution.AllProjects())
             {
-                ExportTemplate(project.Name, includeNuGetPackages);
+                yield return ExportTemplate(project.Name, includeNuGetPackages);
             }
         }
 
-        public virtual void ExportTemplate(string projectName, bool includeNuGetPackages)
+        public virtual string ExportTemplate(string projectName, bool includeNuGetPackages)
         {
-            Log.Write("Exporting project template...");
+            Log.Write("Exporting project template - {0}...", projectName);
 
             var template = new ExportTemplatePackage();
             //var package = ExportTemplatePackage.PackageInstance;
@@ -83,8 +84,8 @@ namespace vspte
             //    .Invoke(wizard, null);
             //wizard.OnFinish();
 
-            wizard.GetProjectXMLFile();
             Log.WriteLine(" OK");
+            return wizard.GetProjectXMLFile();
         }
 
         public virtual void CreateVsix(string templateName, string vsixProjectName)
@@ -113,6 +114,29 @@ namespace vspte
             {
                 ((IDisposable) _messageFilter).Dispose();
             }
+        }
+
+        public void CombineTemplates(string solutionName, IEnumerable<string> exportedTemplates)
+        {
+            string directory = string.Empty;
+            foreach (var templatePath in exportedTemplates)
+            {
+                directory = Path.GetDirectoryName(templatePath);
+                ZipFile.ExtractToDirectory(templatePath, Path.Combine(directory, solutionName, Path.GetFileNameWithoutExtension(templatePath)));
+            }
+
+            if (!string.IsNullOrEmpty(directory))
+            {
+                ZipFile.CreateFromDirectory(Path.Combine(directory, solutionName), Path.Combine(directory, solutionName + ".zip"));
+
+                foreach (var templatePath in exportedTemplates)
+                {
+                    File.Delete(templatePath);
+                }
+                Directory.Delete(Path.Combine(directory, solutionName), true);
+            }
+
+
         }
     }
 }

@@ -18,7 +18,7 @@ namespace vspte.Export
     {
         private int m_uniqueID;
 
-        public void GetProjectXMLFile()
+        public string GetProjectXMLFile()
         {
             XmlDocument xmlDocument = new XmlDocument();
             DTE dTE = (DTE)GetUserData("DTE");
@@ -197,6 +197,7 @@ namespace vspte.Export
                 throw new InvalidOperationException("ExportZipFiles finished with error");
             }
             //return wizard.ExportZipFiles(false, project, text, list);
+            return templateZipPath;
         }
 
         private string GetZipSafeName(string itemName, string outputDirectory)

@@ -1,6 +1,8 @@
 ﻿using CommandLine;
 using CommandLine.Text;
 using System;
+using System.IO;
+using System.Linq;
 
 namespace vspte
 {
@@ -22,7 +24,8 @@ namespace vspte
 
                 if (string.IsNullOrEmpty(options.ProjectName))
                 {
-                    vs.ExportTemplate(options.IncludeNuGetPackages);
+                    var exportedTemplates = vs.ExportTemplate(options.IncludeNuGetPackages).ToList();
+                    vs.CombineTemplates(Path.GetFileNameWithoutExtension(options.SlnPath), exportedTemplates);
                 }
                 else
                 {

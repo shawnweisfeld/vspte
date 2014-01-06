@@ -25,7 +25,15 @@ namespace vspte
                 if (string.IsNullOrEmpty(options.ProjectName))
                 {
                     var exportedTemplates = vs.ExportTemplate(options.IncludeNuGetPackages).ToList();
-                    vs.CombineTemplates(Path.GetFileNameWithoutExtension(options.SlnPath), exportedTemplates);
+
+                    if (exportedTemplates.Any())
+                    {
+                        vs.CombineTemplates(Path.GetFileNameWithoutExtension(options.SlnPath), exportedTemplates);
+                    }
+                    else
+                    {
+                        Console.WriteLine("No Projects to export!");
+                    }
                 }
                 else
                 {

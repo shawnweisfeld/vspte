@@ -33,7 +33,9 @@ namespace vspte
 
             vs._messageFilter = new MessageFilter();
 
-            var dteComClassName = Type.GetTypeFromProgID("VisualStudio.DTE", true);
+            //TODO: hard coded to vs 2013 need to modify for other version of vs. 
+            //http://www.mztools.com/articles/2011/MZ2011011.aspx
+            var dteComClassName = Type.GetTypeFromProgID("VisualStudio.DTE.12.0", true);
             vs._dte = (DTE) Activator.CreateInstance(dteComClassName);
 
             vs.Log.WriteLine(" OK");
@@ -127,7 +129,13 @@ namespace vspte
 
             if (!string.IsNullOrEmpty(directory))
             {
-                ZipFile.CreateFromDirectory(Path.Combine(directory, solutionName), Path.Combine(directory, solutionName + ".zip"));
+                var src = Path.Combine(directory, solutionName);
+                var dest = Path.Combine(directory, solutionName + ".zip");
+
+                if (File.Exists(dest))
+                    File.Delete(dest);
+
+                ZipFile.CreateFromDirectory(src, dest);
 
                 foreach (var templatePath in exportedTemplates)
                 {

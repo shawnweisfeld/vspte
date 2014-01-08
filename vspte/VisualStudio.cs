@@ -33,9 +33,9 @@ namespace vspte
 
             vs._messageFilter = new MessageFilter();
 
-            //TODO: hard coded to vs 2013 need to modify for other version of vs. 
+            //TODO: hard coded to vs 2012 need to modify for other version of vs. 
             //http://www.mztools.com/articles/2011/MZ2011011.aspx
-            var dteComClassName = Type.GetTypeFromProgID("VisualStudio.DTE.12.0", true);
+            var dteComClassName = Type.GetTypeFromProgID("VisualStudio.DTE.11.0", true);
             vs._dte = (DTE) Activator.CreateInstance(dteComClassName);
 
             vs.Log.WriteLine(" OK");

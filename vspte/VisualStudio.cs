@@ -11,6 +11,7 @@ using vspte.Com;
 using vspte.Export;
 using vspte.Vsix;
 using System.IO.Compression;
+using System.Xml.Linq;
 
 namespace vspte
 {
@@ -135,6 +136,8 @@ namespace vspte
                 if (File.Exists(dest))
                     File.Delete(dest);
 
+                ProjectTemplate.ProjectTemplateBuilder.Create(_dte.Solution, src);
+                
                 ZipFile.CreateFromDirectory(src, dest);
 
                 foreach (var templatePath in exportedTemplates)

@@ -60,6 +60,33 @@ namespace vspte
             {
                 yield return ExportTemplate(project.Name, includeNuGetPackages);
             }
+
+            var zipPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My Exported Templates",  "SolutionItems.zip");
+            using (FileStream zipToOpen = new FileStream(zipPath, FileMode.CreateNew))
+            using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
+            {
+                string solutionPath = Path.GetDirectoryName(_dte.Solution.FullName);
+
+                foreach (var solutionItem in _dte.Solution.SolutionItems())
+                {
+                    string sourceFile;
+                    string entryName;
+
+                    if (solutionItem.ContainingProject.Name.Equals("Solution Items"))
+                    {
+                        sourceFile = Path.Combine(solutionPath, solutionItem.Name);
+                        entryName = solutionItem.Name;
+                    }
+                    else
+                    {
+                        sourceFile = Path.Combine(solutionPath, solutionItem.ContainingProject.Name, solutionItem.Name);
+                        entryName = Path.Combine(solutionItem.ContainingProject.Name, solutionItem.Name);
+                    }
+
+                    archive.CreateEntryFromFile(sourceFile, entryName);
+                }
+            }
+            yield return zipPath;
         }
 
         public virtual string ExportTemplate(string projectName, bool includeNuGetPackages)

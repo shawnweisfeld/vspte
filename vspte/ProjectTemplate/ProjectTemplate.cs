@@ -28,7 +28,9 @@ namespace vspte.ProjectTemplate
                 }
 
                 //a solution folder
-                else if (project != null && !string.IsNullOrEmpty(project.Name))
+                else if (project != null 
+                    && !string.IsNullOrEmpty(project.Name)
+                    && !project.Name.Equals("Solution Items"))
                 {
                     var items = new List<object>();
 

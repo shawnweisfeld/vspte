@@ -46,6 +46,22 @@ namespace vspte
                 }
             }
         }
+
+        public static IEnumerable<ProjectItem> SolutionItems(this Solution solution)
+        {
+            foreach (var project in solution.Projects.Cast<Project>())
+            {
+                foreach (var subproject in project.ProjectItems.Cast<ProjectItem>())
+                {
+                    if (subproject != null 
+                        && subproject.SubProject == null
+                        && !string.IsNullOrEmpty(subproject.Name))
+                    {
+                        yield return subproject;
+                    }
+                }
+            }
+        }
         
     }
 }
